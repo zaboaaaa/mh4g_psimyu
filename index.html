@@ -157,12 +157,14 @@ summary { cursor: pointer; color: var(--accent); font-weight: 700; padding-block
 .grid td.am .on{color:#000;font-weight:700}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .grid td.am .on{color:#fff}:root:not([data-theme="light"]) .grid td.am .off{color:#a09070}}
 .grid{table-layout:fixed;width:100%}
-.grid th:nth-child(1),.grid td:nth-child(1){width:17%}
-.grid th:nth-child(2),.grid td:nth-child(2){width:20%}
-.grid th:nth-child(3),.grid td:nth-child(3){width:10%}
-.grid th:nth-child(4),.grid td:nth-child(4){width:20%}
-.grid th:nth-child(5),.grid td:nth-child(5){width:13%}
-.grid th:nth-child(6),.grid td:nth-child(6){width:20%}
+.grid th:nth-child(1),.grid td:nth-child(1){width:8%}
+.grid th:nth-child(2),.grid td:nth-child(2){width:23%}
+.grid th:nth-child(3),.grid td:nth-child(3){width:7%}
+.grid th:nth-child(4),.grid td:nth-child(4){width:23%}
+.grid th:nth-child(5),.grid td:nth-child(5){width:7%}
+.grid th:nth-child(6),.grid td:nth-child(6){width:32%}
+.grid td{padding-left:4px;padding-right:4px}
+.grid td.nm{white-space:normal}
 .grid th{white-space:nowrap;padding-left:2px;padding-right:2px}
 .seg select{flex:0 0 auto;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer}
 .seg select:disabled{opacity:.6;cursor:not-allowed}
@@ -4238,14 +4240,14 @@ const ARMOR = [
   {"series":"発掘","sex":"b","role":"g","pieces":[[3,"発掘祈願5",0,{"祈願":5}]]},
   {"series":"発掘","sex":"b","role":"g","pieces":[[4,"発掘祈願5",0,{"祈願":5}]]},
   {"series":"発掘","sex":"b","role":"b","pieces":[[0,"発掘(空き3)",3,{}]]},
-  {"series":"発掘","sex":"b","role":"g","pieces":[[1,"発掘(空き3)",3,{}]]},
   {"series":"発掘","sex":"b","role":"s","pieces":[[1,"発掘(空き3)",3,{}]]},
-  {"series":"発掘","sex":"b","role":"g","pieces":[[2,"発掘(空き3)",3,{}]]},
+  {"series":"発掘","sex":"b","role":"g","pieces":[[1,"発掘(空き3)",3,{}]]},
   {"series":"発掘","sex":"b","role":"s","pieces":[[2,"発掘(空き3)",3,{}]]},
-  {"series":"発掘","sex":"b","role":"g","pieces":[[3,"発掘(空き3)",3,{}]]},
+  {"series":"発掘","sex":"b","role":"g","pieces":[[2,"発掘(空き3)",3,{}]]},
   {"series":"発掘","sex":"b","role":"s","pieces":[[3,"発掘(空き3)",3,{}]]},
-  {"series":"発掘","sex":"b","role":"g","pieces":[[4,"発掘(空き3)",3,{}]]},
-  {"series":"発掘","sex":"b","role":"s","pieces":[[4,"発掘(空き3)",3,{}]]}
+  {"series":"発掘","sex":"b","role":"g","pieces":[[3,"発掘(空き3)",3,{}]]},
+  {"series":"発掘","sex":"b","role":"s","pieces":[[4,"発掘(空き3)",3,{}]]},
+  {"series":"発掘","sex":"b","role":"g","pieces":[[4,"発掘(空き3)",3,{}]]}
 ];
 DATA.charms = CHARMS;
 DATA.decorations = DECORATIONS;
@@ -4420,10 +4422,10 @@ function showResults(box, out) {
       if (CHARMS.special[t] && !r.a) return false;
       return (fits(r.a, r.av, 0, t) && fits(r.b, r.bv, 1, t)) || (!r.b && fits(r.a, r.av, 0, t)) || (!!r.a && !!r.b && fits(r.b, r.bv, 0, t) && fits(r.a, r.av, 1, t));
     });
-    const amuletCell = r => { const am = amulets(r); return '<td class="am">' + am.slice(0, 5).map((ok, i) => '<span class="' + (ok ? 'on' : 'off') + '">' + '光古風歪刻'[i] + '</span>').join(' ') + (am[5] ? ' <span class="on">謎</span>' : '') + '</td>'; };
+    const amuletCell = r => { const am = amulets(r); return '<td class="am">' + am.slice(0, 5).map((ok, i) => '<span class="' + (ok ? 'on' : 'off') + '">' + '光古風歪刻'[i] + '</span>').join(' ') + '</td>'; };
     const cell = (k, v) => k ? '<td class="nm">' + esc(k) + '</td><td class="pt">' + v + '</td>' : '<td class="none">–</td><td class="none">–</td>';
     let prev = null;
-    html += '<div class="gridwrap"><table class="grid"><thead><tr><th>スロット数</th><th>スキル1</th><th>値</th><th>スキル2</th><th>値</th><th>お守り</th></tr></thead><tbody>' +
+    html += '<div class="gridwrap"><table class="grid"><thead><tr><th>スロ</th><th>スキル1</th><th>値</th><th>スキル2</th><th>値</th><th>お守り</th></tr></thead><tbody>' +
       shownRows.map(r => {
         const g = r.a + '|' + r.b;
         const cl = [prev !== null && prev !== g ? 'gs' : '', r.neset ? 'neset' : ''].filter(Boolean).join(' ');
@@ -4432,7 +4434,6 @@ function showResults(box, out) {
         return '<tr' + cls + '><td class="sl">' + r.slots + '</td>' + cell(r.a, r.av) + cell(r.b, r.bv) + amuletCell(r) + '</tr>';
       }).join('') + '</tbody></table></div>';
     if (uniqRows.some(r => r.a === '自動防御' || r.b === '自動防御')) html += '<p class="slotnote">自動防御は、ストーリーでもらえる「自動防御10・スロット0」の護石でだけ付きます(お守り欄はすべて灰色)。</p>';
-    if (uniqRows.some(r => r.a === '乗り' || r.b === '乗り')) html += '<p class="slotnote">「謎」は、なぞのお守り(乗り10・スロット0か1)で組めることを表します。</p>';
     if (uniqRows.length > shownRows.length) html += '<p class="slotnote">ほかに' + (uniqRows.length - shownRows.length) + '行あります。</p>';
   }
   box.innerHTML = html;
